@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { PersonsService } from './persons.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-persons',
   templateUrl: './persons.component.html'
 })
-export class PersonsComponent implements OnInit {
+export class PersonsComponent implements OnInit, OnDestroy {
   personList: string[];
+  private personListSubs: Subscription;
 
   // adding private in the constructor variable makes
   // an attribute for the class and injects the service
@@ -24,5 +26,16 @@ export class PersonsComponent implements OnInit {
   // and not in the constructor
   ngOnInit() {
     this.personList = this.personsService.persons;
+    this.personListSubs = this.personsService.personsChanged.subscribe(persons => {
+      this.personList = persons;
+    });
+  }
+
+  ngOnDestroy() {
+    this.personListSubs.unsubscribe();
+  }
+
+  onRemovePerson(name: string) {
+    this.personsService.removePerson(name);
   }
 }
