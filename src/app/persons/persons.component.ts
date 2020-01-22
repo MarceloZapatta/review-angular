@@ -25,10 +25,10 @@ export class PersonsComponent implements OnInit, OnDestroy {
   // Is recomended to initialize things in ngOnInit method
   // and not in the constructor
   ngOnInit() {
-    this.personList = this.personsService.persons;
     this.personListSubs = this.personsService.personsChanged.subscribe(persons => {
       this.personList = persons;
     });
+    this.personsService.fetchPersons();
   }
 
   ngOnDestroy() {
